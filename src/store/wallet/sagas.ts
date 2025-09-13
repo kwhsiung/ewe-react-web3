@@ -18,7 +18,7 @@ import {
   disconnectSuccess,
   updateInfoFailure,
   updateInfoSuccess,
-} from "../slices/walletSlice";
+} from "./slice";
 
 // Custom action types for sagas
 interface ConnectWalletAction {

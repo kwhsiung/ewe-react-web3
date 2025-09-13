@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 import type { WalletInfo as WalletInfoType } from "../utils/web3";
 
@@ -11,7 +10,7 @@ const WalletInfoContainer = styled.div`
   background: white;
   border-radius: 8px;
   border: 1px solid #e1e5e9;
-  min-width: 300px;
+  width: 100%;
 `;
 
 const InfoRow = styled.div`
@@ -31,25 +30,11 @@ const Value = styled.span`
   font-family: 'Courier New', monospace;
 `;
 
-const Address = styled(Value)`
-  max-width: 150px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
-
 interface Props {
   walletInfo: WalletInfoType;
 }
 
 export function WalletInfo({ walletInfo }: Props) {
-  const formatAddress = (addr: string) => {
-    return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
-  };
-
-  const formatBalance = (balance: string) => {
-    return parseFloat(balance).toFixed(4);
-  };
-
   return (
     <WalletInfoContainer>
       <InfoRow>
@@ -58,13 +43,11 @@ export function WalletInfo({ walletInfo }: Props) {
       </InfoRow>
       <InfoRow>
         <Label>Address:</Label>
-        <Address title={walletInfo.address}>
-          {walletInfo.address ? formatAddress(walletInfo.address) : "Not connected"}
-        </Address>
+        <Value>{walletInfo.address ?? "Not connected"}</Value>
       </InfoRow>
       <InfoRow>
         <Label>Balance:</Label>
-        <Value>{formatBalance(walletInfo.balance)} ETH</Value>
+        <Value>{walletInfo.balance} ETH</Value>
       </InfoRow>
     </WalletInfoContainer>
   );

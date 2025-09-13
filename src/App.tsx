@@ -1,11 +1,10 @@
-import React from "react";
 import { Provider, useSelector } from "react-redux";
 import styled from "styled-components";
 import ConnectButton from "./components/ConnectButton";
 import GasPriceDisplay from "./components/GasPriceDisplay";
 import { WalletInfo } from "./components/WalletInfo";
 import { store } from "./store";
-import { selectWalletInfo } from "./store/slices/walletSlice";
+import { selectWalletInfo } from "./store/wallet";
 
 const AppContainer = styled.div`
   min-height: 100vh;

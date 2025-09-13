@@ -2,7 +2,7 @@ import type { SagaIterator, Task } from "redux-saga";
 import { call, cancel, delay, fork, put, select, take } from "redux-saga/effects";
 import { getGasPrice } from "../../utils/web3";
 import type { RootState } from "../index";
-import { fetchFailure, fetchSuccess, reset, setLoading } from "../slices/gasPriceSlice";
+import { fetchFailure, fetchSuccess, reset, setLoading } from "./slice";
 
 // Worker Saga: Fetch gas price
 function* fetchGasPriceSaga(): SagaIterator {

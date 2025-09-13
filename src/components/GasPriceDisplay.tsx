@@ -1,8 +1,7 @@
-import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { selectGasPriceInfo } from "../store/slices/gasPriceSlice";
-import { selectWalletInfo } from "../store/slices/walletSlice";
+import { selectGasPriceInfo } from "../store/gasPrice";
+import { selectWalletInfo } from "../store/wallet";
 import { useDebounce } from "../utils/hooks";
 
 const GasPriceContainer = styled.div`

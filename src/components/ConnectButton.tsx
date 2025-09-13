@@ -1,13 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import {
-  selectIsConnecting,
-  selectWalletError,
-  selectWalletInfo,
-} from "../store/slices/walletSlice";
+import { selectIsConnecting, selectWalletError, selectWalletInfo } from "../store/wallet";
 import { WalletType } from "../utils/web3";
-import { WalletInfo } from "./WalletInfo";
 
 const ConnectButtonContainer = styled.div`
   display: flex;

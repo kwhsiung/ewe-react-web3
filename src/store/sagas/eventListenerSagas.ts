@@ -6,7 +6,7 @@ import {
   onChainChanged,
   removeAllListeners,
 } from "../../utils/web3";
-import { setChainInfo } from "../slices/walletSlice";
+import { setChainInfo } from "../wallet";
 
 // Create event channel for accounts changed
 function createAccountsChangedChannel(): EventChannel<string[]> {

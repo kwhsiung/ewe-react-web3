@@ -52,7 +52,7 @@ const walletSlice = createSlice({
     disconnectSuccess: () => {
       return initialState;
     },
-    disconnectFailure: (state, action: PayloadAction<string>) => {
+    disconnectFailure: (_state, action: PayloadAction<string>) => {
       // Reset to initial state but keep error
       return {
         ...initialState,
