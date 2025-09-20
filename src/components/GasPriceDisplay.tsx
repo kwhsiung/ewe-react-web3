@@ -1,7 +1,5 @@
-import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { selectGasPriceInfo } from "../store/gasPrice";
-import { selectWalletInfo } from "../store/wallet";
+import { useWallet } from "../providers/WalletsProvider";
 import { useDebounce } from "../utils/hooks";
 
 const GasPriceContainer = styled.div`
@@ -77,40 +75,41 @@ const RefreshButton = styled.button`
 `;
 
 export default function GasPriceDisplay() {
-  const dispatch = useDispatch();
-
-  const walletInfo = useSelector(selectWalletInfo);
-  const { gasPriceGwei, lastUpdated, isLoading, error } = useSelector(selectGasPriceInfo);
+  const { walletInfo, gasPriceInfo, refreshGasPrice } = useWallet();
 
   const handleRefresh = useDebounce(
     () => {
-      if (walletInfo.isConnected) {
-        dispatch({ type: "gasPrice/fetchRequest" });
+      if (walletInfo?.isConnected) {
+        refreshGasPrice();
       }
     },
     500,
-    [dispatch, walletInfo.isConnected]
+    [refreshGasPrice, walletInfo?.isConnected]
   );
 
   return (
     <GasPriceContainer>
       <Title>Current Gas Price</Title>
 
-      {error ? (
+      {gasPriceInfo.error ? (
         <ErrorMessage>
-          {error}
-          <RefreshButton onClick={handleRefresh} disabled={isLoading}>
-            {isLoading ? "Refreshing..." : "Retry"}
+          {gasPriceInfo.error}
+          <RefreshButton onClick={handleRefresh} disabled={gasPriceInfo.isLoading}>
+            {gasPriceInfo.isLoading ? "Refreshing..." : "Retry"}
           </RefreshButton>
         </ErrorMessage>
       ) : (
         <>
-          <GasPriceValue>{isLoading ? <LoadingSpinner /> : `${gasPriceGwei} gwei`}</GasPriceValue>
+          <GasPriceValue>
+            {gasPriceInfo.isLoading ? <LoadingSpinner /> : `${gasPriceInfo.gasPriceGwei} gwei`}
+          </GasPriceValue>
 
-          {lastUpdated ? <LastUpdated>上次更新：{lastUpdated}</LastUpdated> : null}
+          {gasPriceInfo.lastUpdated ? (
+            <LastUpdated>上次更新：{gasPriceInfo.lastUpdated}</LastUpdated>
+          ) : null}
 
-          <RefreshButton onClick={handleRefresh} disabled={isLoading}>
-            {isLoading ? "Refreshing..." : "Refresh"}
+          <RefreshButton onClick={handleRefresh} disabled={gasPriceInfo.isLoading}>
+            {gasPriceInfo.isLoading ? "Refreshing..." : "Refresh"}
           </RefreshButton>
         </>
       )}

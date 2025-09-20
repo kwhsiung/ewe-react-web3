@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { selectIsConnecting, selectWalletError, selectWalletInfo } from "../store/wallet";
-import { WalletType } from "../utils/web3";
+import { WalletType } from "../providers/types";
+import { useWallet } from "../providers/WalletsProvider";
 
 const ConnectButtonContainer = styled.div`
   display: flex;
@@ -124,13 +123,9 @@ const WalletConnectButton = styled(WalletButton)`
 `;
 
 export default function ConnectButton() {
-  const dispatch = useDispatch();
-
+  const { walletInfo, isConnecting, error, connectWallet, disconnectWallet, clearError } =
+    useWallet();
   const [showWalletOptions, setShowWalletOptions] = useState(false);
-
-  const walletInfo = useSelector(selectWalletInfo);
-  const isConnecting = useSelector(selectIsConnecting);
-  const error = useSelector(selectWalletError);
 
   const handleConnectClick = () => {
     setShowWalletOptions(true);
@@ -140,23 +135,25 @@ export default function ConnectButton() {
     setShowWalletOptions(false);
   };
 
-  const handleConnectMetaMask = () => {
-    dispatch({ type: "wallet/connectRequest", payload: WalletType.METAMASK });
+  const handleConnectMetaMask = async () => {
+    clearError();
+    await connectWallet(WalletType.METAMASK);
   };
 
-  const handleConnectWalletConnect = () => {
-    dispatch({ type: "wallet/connectRequest", payload: WalletType.WALLETCONNECT });
+  const handleConnectWalletConnect = async () => {
+    clearError();
+    await connectWallet(WalletType.WALLETCONNECT);
   };
 
-  const handleDisconnect = () => {
-    dispatch({ type: "wallet/disconnectRequest" });
+  const handleDisconnect = async () => {
+    await disconnectWallet();
   };
 
   return (
     <ConnectButtonContainer>
       {error ? <ErrorMessage>{error}</ErrorMessage> : null}
 
-      {!walletInfo.isConnected ? (
+      {!walletInfo?.isConnected ? (
         !showWalletOptions ? (
           <Button onClick={handleConnectClick}>Connect</Button>
         ) : (

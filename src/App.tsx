@@ -1,10 +1,8 @@
-import { Provider, useSelector } from "react-redux";
 import styled from "styled-components";
 import ConnectButton from "./components/ConnectButton";
 import GasPriceDisplay from "./components/GasPriceDisplay";
 import { WalletInfo } from "./components/WalletInfo";
-import { store } from "./store";
-import { selectWalletInfo } from "./store/wallet";
+import WalletsProvider, { useWallet } from "./providers/WalletsProvider";
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -46,7 +44,7 @@ const MainContent = styled.main`
 `;
 
 function AppContent() {
-  const walletInfo = useSelector(selectWalletInfo);
+  const { walletInfo } = useWallet();
 
   return (
     <AppContainer>
@@ -57,7 +55,7 @@ function AppContent() {
 
       <MainContent>
         <ConnectButton />
-        {walletInfo.isConnected ? (
+        {walletInfo?.isConnected ? (
           <>
             <WalletInfo walletInfo={walletInfo} />
             <GasPriceDisplay />
@@ -70,9 +68,9 @@ function AppContent() {
 
 function App() {
   return (
-    <Provider store={store}>
+    <WalletsProvider>
       <AppContent />
-    </Provider>
+    </WalletsProvider>
   );
 }
 

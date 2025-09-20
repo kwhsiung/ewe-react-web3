@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import type { WalletInfo as WalletInfoType } from "../utils/web3";
+import type { WalletInfo as WalletInfoType } from "../providers/types";
 
 const WalletInfoContainer = styled.div`
   display: flex;
