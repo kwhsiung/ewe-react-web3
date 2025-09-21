@@ -1,42 +1,64 @@
 import { useCallback, useEffect, useRef } from "react";
 
-/**
- * Custom hook for debouncing function calls
- * @param callback - The function to debounce
- * @param delay - Delay in milliseconds
- * @param deps - Dependencies array for useCallback
- * @returns Debounced version of the callback function
+/* Based on https://github.com/xnimorz/use-debounce#debounced-callbacks
+ *
+ * HOW TO USE (debounced InputText with suggestions):
+ * const fetchSuggestionsDebounced = useDebouncedCallback(query => {
+ *   dispatch(actionCreatorRequest(query))
+ * }, DEBOUNCE_TIMING);
+ *
+ * onInputTextChange = e => {
+ *   setInput(e.target.value);
+ *   fetchSuggestionsDebounced(e.target.value);
+ * }
  */
-export function useDebounce<T extends (...args: any[]) => any>(
-  callback: T,
-  delay: number,
-  deps: React.DependencyList = []
-): T {
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+export function useDebouncedCallback<T>(
+  callback: (arg0: T) => void,
+  delay: number
+): (arg0?: T) => void {
+  const { debouncedCallback } = useCancellableDebouncedCallback(callback, delay);
+  return debouncedCallback;
+}
 
-  const debouncedCallback = useCallback(
-    (...args: Parameters<T>) => {
-      // Clear any existing timeout
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
+export function useCancellableDebouncedCallback<T>(
+  callback: (arg0: T) => void,
+  delay: number
+): {
+  debouncedCallback: (arg0?: T) => void;
+  cancelDebouncedCallback: () => void;
+} {
+  type Timeout = ReturnType<typeof setTimeout>;
+  const functionTimeoutHandler = useRef<Timeout | null>(null);
+  const isComponentUnmounted: {
+    current: boolean;
+  } = useRef(false);
 
-      // Set a new timeout
-      timeoutRef.current = setTimeout(() => {
-        callback(...args);
-      }, delay);
-    },
-    [callback, delay, ...deps]
-  ) as T;
-
-  // Cleanup timeout on component unmount
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
+  const debouncedFunction = useRef(callback);
+  debouncedFunction.current = callback;
+  const cancelDebouncedCallback: () => void = useCallback(() => {
+    clearTimeout(functionTimeoutHandler.current as unknown as Timeout);
+    functionTimeoutHandler.current = null;
   }, []);
 
-  return debouncedCallback;
+  // clear timer on component unmount
+  useEffect(() => {
+    return () => {
+      cancelDebouncedCallback();
+    };
+  }, [cancelDebouncedCallback]);
+
+  const debouncedCallback = useCallback(
+    (...args: [any]) => {
+      clearTimeout(functionTimeoutHandler.current as unknown as Timeout);
+      functionTimeoutHandler.current = setTimeout(() => {
+        cancelDebouncedCallback();
+
+        if (!isComponentUnmounted.current) {
+          debouncedFunction.current(...args);
+        }
+      }, delay);
+    },
+    [delay, cancelDebouncedCallback]
+  );
+  return { cancelDebouncedCallback, debouncedCallback };
 }

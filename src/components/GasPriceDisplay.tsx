@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useWallet } from "../providers/WalletsProvider";
-import { useDebounce } from "../utils/hooks";
+import { useDebouncedCallback } from "../utils/hooks";
 
 const GasPriceContainer = styled.div`
   display: flex;
@@ -77,15 +77,11 @@ const RefreshButton = styled.button`
 export default function GasPriceDisplay() {
   const { walletInfo, gasPriceInfo, refreshGasPrice } = useWallet();
 
-  const handleRefresh = useDebounce(
-    () => {
-      if (walletInfo?.isConnected) {
-        refreshGasPrice();
-      }
-    },
-    500,
-    [refreshGasPrice, walletInfo?.isConnected]
-  );
+  const handleRefresh = useDebouncedCallback(() => {
+    if (walletInfo?.isConnected) {
+      refreshGasPrice();
+    }
+  }, 500);
 
   return (
     <GasPriceContainer>
