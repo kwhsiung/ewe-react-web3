@@ -1,61 +1,27 @@
 {
   "name": "ewe-react-web3",
-  "version": "0.1.0",
   "private": true,
-  "dependencies": {
-    "@types/node": "^16.18.0",
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
-    "@types/styled-components": "^5.1.26",
-    "@walletconnect/ethereum-provider": "^2.21.8",
-    "@walletconnect/modal": "^2.7.0",
-    "@walletconnect/utils": "^2.21.9",
-    "ethers": "^5.7.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
-    "styled-components": "^5.3.11",
-    "typescript": "^4.9.5"
-  },
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "start": "GENERATE_SOURCEMAP=false BROWSER=none react-scripts start",
-    "build": "GENERATE_SOURCEMAP=false react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "format": "biome format --write .",
-    "format:check": "biome format .",
-    "lint": "biome lint .",
-    "lint:fix": "biome lint --write .",
-    "check": "biome check .",
-    "check:fix": "biome check --write .",
-    "prepare": "husky"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx,json,css,md}": [
-      "biome check --write --no-errors-on-unmatched"
-    ]
+  "dependencies": {
+    "@tanstack/react-query": "5.45.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "viem": "latest",
+    "wagmi": "latest"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.2.4",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.1.6"
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "@wagmi/cli": "latest",
+    "buffer": "^6.0.3",
+    "typescript": "^5.8.3",
+    "vite": "^5.2.11"
   }
 }
