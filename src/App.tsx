@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { formatEther } from 'viem'
 import { 
   useAccount, 
@@ -7,58 +7,44 @@ import {
   useBalance,
   useEstimateFeesPerGas
 } from 'wagmi'
+import type { EstimateFeesPerGasData } from '@wagmi/core/query'
+
+const formatGasPrice = (feeData: EstimateFeesPerGasData<'eip1559'> | undefined) => {
+  if (!feeData) return 'N/A'
+  
+  // For EIP-1559, use maxFeePerGas, for legacy use gasPrice
+  const gasPrice = feeData.gasPrice || feeData.maxFeePerGas
+  if (!gasPrice) return 'N/A'
+  
+  // Convert from wei to gwei (divide by 10^9)
+  const gwei = Number(gasPrice) / 1e9
+  return `${gwei.toFixed(2)} gwei`
+}
+
+const formatLastUpdate = (date: number) => {
+  return new Date(date).toLocaleString('zh-TW', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  })
+}
 
 function App() {
   const [showWalletOptions, setShowWalletOptions] = useState(false)
-  const [lastGasUpdate, setLastGasUpdate] = useState<Date | null>(null)
   
   const account = useAccount()
   const { connectors, connect, status, error } = useConnect()
   const { disconnect } = useDisconnect()
   const { data: balance } = useBalance({ address: account.address })
-  const { data: feeData, refetch: refetchFeeData } = useEstimateFeesPerGas()
-
-  // Update last gas update time when fee data changes
-  useEffect(() => {
-    if (feeData) {
-      setLastGasUpdate(new Date())
+  const { data: feeData, dataUpdatedAt: feeDataUpdatedAt } = useEstimateFeesPerGas({
+    query: {
+      refetchInterval: 5000,
     }
-  }, [feeData])
-
-  // Set up polling for gas price every 5 seconds when connected
-  useEffect(() => {
-    if (account.status === 'connected') {
-      const interval = setInterval(() => {
-        refetchFeeData()
-      }, 5000)
-
-      return () => clearInterval(interval)
-    }
-  }, [account.status, refetchFeeData])
-
-
-  const formatGasPrice = (feeData: any) => {
-    if (!feeData) return 'N/A'
-    
-    // For EIP-1559, use maxFeePerGas, for legacy use gasPrice
-    const gasPrice = feeData.gasPrice || feeData.maxFeePerGas
-    if (!gasPrice) return 'N/A'
-    
-    // Convert from wei to gwei (divide by 10^9)
-    const gwei = Number(gasPrice) / 1e9
-    return `${gwei.toFixed(2)} gwei`
-  }
-
-  const formatLastUpdate = (date: Date) => {
-    return date.toLocaleString('zh-TW', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
-    })
-  }
+  })
 
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
@@ -75,9 +61,9 @@ function App() {
           
           <div style={{ marginBottom: '20px' }}>
             <p><strong>Gas Price:</strong> {formatGasPrice(feeData)}</p>
-            {lastGasUpdate && (
+            {feeDataUpdatedAt && (
               <p style={{ fontSize: '14px', color: '#666' }}>
-                上次更新: {formatLastUpdate(lastGasUpdate)}
+                上次更新: {formatLastUpdate(feeDataUpdatedAt)}
               </p>
             )}
           </div>
