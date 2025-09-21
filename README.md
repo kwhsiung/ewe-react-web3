@@ -208,7 +208,3 @@ If you encounter network-related errors:
 4. Run `npm run check:fix` to ensure code quality
 5. Test thoroughly
 6. Submit a pull request
-
-## License
-
-MIT License - see LICENSE file for details
