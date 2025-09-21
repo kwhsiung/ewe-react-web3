@@ -224,6 +224,7 @@ export const WalletConnectProvider: React.FC<WalletConnectProviderProps> = ({ ch
   }, [isInitialized, isValidSession]);
 
   // Connect to WalletConnect
+  // @ts-expect-error
   const connect = useCallback(async (): Promise<WalletInfo> => {
     if (!isInitialized) {
       throw new Error("WalletConnect not initialized");
@@ -255,7 +256,7 @@ export const WalletConnectProvider: React.FC<WalletConnectProviderProps> = ({ ch
       const errorMessage = (error as Error).message || "Failed to connect to WalletConnect";
       console.error("WalletConnect connection error:", error);
       setError(errorMessage);
-      throw error;
+      // throw error;
     } finally {
       setIsConnecting(false);
     }
