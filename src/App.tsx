@@ -36,10 +36,6 @@ function App() {
     }
   }, [account.status, refetchFeeData])
 
-  // Filter connectors to only show MetaMask and WalletConnect
-  const filteredConnectors = connectors.filter(connector => 
-    connector.name === 'MetaMask' || connector.name === 'WalletConnect'
-  )
 
   const formatGasPrice = (feeData: any) => {
     if (!feeData) return 'N/A'
@@ -125,7 +121,7 @@ function App() {
             <div>
               <h2>Choose Wallet</h2>
               <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
-                {filteredConnectors.map((connector) => (
+                {connectors.map((connector) => (
                   <button
                     key={connector.uid}
                     onClick={() => connect({ connector })}
