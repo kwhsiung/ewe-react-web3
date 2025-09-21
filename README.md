@@ -208,3 +208,23 @@ If you encounter network-related errors:
 4. Run `npm run check:fix` to ensure code quality
 5. Test thoroughly
 6. Submit a pull request
+
+## Demo
+
+![](./assets/Kapture%202025-09-21%20at%2021.19.48.gif)
+
+## Known issues
+
+### Runtime error: `No matching key. session topic doesn't exist`
+
+![](./assets/Kapture%202025-09-21%20at%2021.15.55.gif)
+
+### Connection rejected was unhandled
+
+![](./assets/Kapture%202025-09-21%20at%2021.24.02.gif)
+
+### `Error getting MetaMask wallet info: Error: unknown account #0 (operation="getAddress", code=UNSUPPORTED_OPERATION, version=providers/5.8.0)`
+
+![](./assets/Screenshot%202025-09-21%20at%209.11.36 PM.png)
+
+
